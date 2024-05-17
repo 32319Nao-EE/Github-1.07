@@ -5,14 +5,17 @@ import wiringpi
 from random import randint
 from PIL import ImageFont
 
+SW1=5
 
 def main():    #　main担当： 1. □マークを追加する。  2. ギリギリ○マークが勝てるようにする
     disp, image, draw = oled.oled_setup()
+    wiringpi.wiringPiSetupGpio()
+    wiringpi.pinMode(SW1,0)
     fsize = 15
-    n = 1    #　この部分が〇の固定値
+    n = 3.4    #　この部分が〇の固定値
     ifont = ImageFont.truetype('/usr/share/fonts/oled/Shinonome/Shinonome16.ttf',fsize,encoding='unic')
     
-    members = [entry(0, fsize, '〇'), entry(0, fsize*2, '△')]    #　この部分に各印（xの位置、yの位置、マーク）が格納されている
+    members = [entry(0, fsize, '〇'), entry(0, fsize*2, '△'),entry(0, fsize*3, '□')]    #　この部分に各印（xの位置、yの位置、マーク）が格納されている
     
     while True:
         make(image, draw, ifont, members)
@@ -50,9 +53,11 @@ def make(image, draw, ifont, members):    # make担当：x座標0に"Start"、10
         draw.text((0,0),'Start',font=ifont,fill=255)
         draw.text((100,0),'Goal',font=ifont,fill=255)
 
-def switch(cir,n):    # switch担当：固定値となっている○の移動をSW1を押されたとき（長押し可）に移動するようにする　*前回の実験資料参照（SW1は5である）
-    cir = cir + n
-    return cir        
+def switch(cir,n): # switch担当：固定値となっている○の移動をSW1を押されたとき（長押し可）に移動するようにする　*前回の実験資料参照（SW1は5である）
+
+    if(wiringpi.digitalRead(SW1)==0):
+        cir =cir + n
+    return cir
 
 if __name__ == '__main__':
     main()
