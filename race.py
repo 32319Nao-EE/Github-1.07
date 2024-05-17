@@ -5,7 +5,6 @@ import wiringpi
 from random import randint
 from PIL import ImageFont
 
-print('まだ修正中')    # 自分の担当分の修正が完了したら、この行は削除しておいてください。
 
 def main():    #　main担当： 1. □マークを追加する。  2. ギリギリ○マークが勝てるようにする
     disp, image, draw = oled.oled_setup()
@@ -42,12 +41,14 @@ class entry:
     def play(self, n):
         self.num = switch(self.num, n)
     def goal(self, draw, ifont):    # goal担当：どれかがゴールしたときに"(ゴールしたマーク） WIN !!"を表示する画面に遷移させる
-        pass    #　このpassを削除してプログラムを作成する
-  
+        oled.oled_clear(draw)  #　このpassを削除してプログラムを作成する
+        draw.text((30,25),self.mark+' WIN !!',font=ifont,fill=255)
     
 def make(image, draw, ifont, members):    # make担当：x座標0に"Start"、100に"Goal"を表示する（yは0でよい）
     for m in members:
         draw.text((m.num,m.pos),m.mark,font=ifont,fill=255)
+        draw.text((0,0),'Start',font=ifont,fill=255)
+        draw.text((100,0),'Goal',font=ifont,fill=255)
 
 def switch(cir,n):    # switch担当：固定値となっている○の移動をSW1を押されたとき（長押し可）に移動するようにする　*前回の実験資料参照（SW1は5である）
     cir = cir + n
